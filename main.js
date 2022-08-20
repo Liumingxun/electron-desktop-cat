@@ -8,8 +8,8 @@ function createWindow() {
     icon: './public/tray-cat.png',
     frame: false,
     transparent: true,
-    width: 800,
-    height: 600,
+    width: 100,
+    height: 100,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: false,
@@ -43,9 +43,15 @@ function createTray(win) {
       click: () => {
         win.show()
       }
+    },
+    {
+      label: '退出',
+      click: () => {
+        app.quit()
+      }
     }
   ])
-  tray.setToolTip('一直缩小的小猫')
+  tray.setToolTip('一只缩小的小猫')
   tray.setContextMenu(contextMenu)
   return tray
 }
