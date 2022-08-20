@@ -1,5 +1,5 @@
 // Modules to control application life and create native browser window
-const {app, BrowserWindow, globalShortcut, Tray, Menu} = require('electron')
+const {app, BrowserWindow, globalShortcut, Tray, Menu, nativeImage} = require('electron')
 const path = require('path')
 
 function createWindow() {
@@ -30,7 +30,8 @@ function createWindow() {
 }
 
 function createTray(win) {
-  const tray = new Tray('./public/tray-cat.png')
+  const icon = nativeImage.createFromPath('./public/tray-cat.png')
+  const tray = new Tray(icon)
   const contextMenu = Menu.buildFromTemplate([
     {
       label: '隐藏',
