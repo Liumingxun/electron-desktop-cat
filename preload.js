@@ -1,12 +1,11 @@
-// All of the Node.js APIs are available in the preload process.
+// All the Node.js APIs are available in the preload process.
 // It has the same sandbox as a Chrome extension.
-window.addEventListener('DOMContentLoaded', () => {
-  const replaceText = (selector, text) => {
-    const element = document.getElementById(selector)
-    if (element) element.innerText = text
-  }
+const { ipcRenderer } = require('electron')
 
-  for (const type of ['chrome', 'node', 'electron']) {
-    replaceText(`${type}-version`, process.versions[type])
-  }
+window.addEventListener('DOMContentLoaded', () => {
+  const catImg = document.getElementById('cat-wrapper')
+  const switchCat = number => catImg.src = `./public/cat-${number}.gif`
+  ipcRenderer.on('change-cat', (ev, number) => {
+    switchCat(number)
+  })
 })

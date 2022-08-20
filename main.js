@@ -1,19 +1,29 @@
 // Modules to control application life and create native browser window
-const {app, BrowserWindow} = require('electron')
+const {app, BrowserWindow, globalShortcut} = require('electron')
 const path = require('path')
 
 function createWindow () {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
+    frame: false,
+    transparent: true,
     width: 800,
     height: 600,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js')
+      preload: path.join(__dirname, 'preload.js'),
+      contextIsolation: false,
+      nodeIntegration: true
     }
   })
 
   // and load the index.html of the app.
   mainWindow.loadFile('index.html')
+  mainWindow.webContents.openDevTools()
+
+  ;[1,2,3,4,5,6].forEach(v => globalShortcut.register(`CommandOrControl+${v}`, () => {
+    mainWindow.webContents.send('change-cat', v)
+    mainWindow.show()
+  }))
 
   // Open the DevTools.
   // mainWindow.webContents.openDevTools()
