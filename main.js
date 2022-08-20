@@ -1,10 +1,11 @@
 // Modules to control application life and create native browser window
-const {app, BrowserWindow, globalShortcut} = require('electron')
+const {app, BrowserWindow, globalShortcut, Tray, Menu} = require('electron')
 const path = require('path')
 
-function createWindow () {
+function createWindow() {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
+    icon: './public/tray-cat.png',
     frame: false,
     transparent: true,
     width: 800,
@@ -18,22 +19,43 @@ function createWindow () {
 
   // and load the index.html of the app.
   mainWindow.loadFile('index.html')
-  mainWindow.webContents.openDevTools()
 
-  ;[1,2,3,4,5,6].forEach(v => globalShortcut.register(`CommandOrControl+${v}`, () => {
+  ;[1, 2, 3, 4, 5, 6].forEach(v => globalShortcut.register(`CommandOrControl+${v}`, () => {
     mainWindow.webContents.send('change-cat', v)
     mainWindow.show()
   }))
-
+  return mainWindow
   // Open the DevTools.
   // mainWindow.webContents.openDevTools()
+}
+
+function createTray(win) {
+  const tray = new Tray('./public/tray-cat.png')
+  const contextMenu = Menu.buildFromTemplate([
+    {
+      label: '隐藏',
+      click: () => {
+        win.hide()
+      }
+    },
+    {
+      label: '显示',
+      click: () => {
+        win.show()
+      }
+    }
+  ])
+  tray.setToolTip('一直缩小的小猫')
+  tray.setContextMenu(contextMenu)
+  return tray
 }
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
-  createWindow()
+  const win = createWindow()
+  createTray(win)
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
